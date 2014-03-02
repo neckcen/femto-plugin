@@ -10,8 +10,8 @@ Requirements
 
 Installation
 ------------
-Copy `page_extra.php` to `femto/plugins` then add _Page_Extra_ to the list of
-enabled plugins in `index.php`:
+Copy `page_extra.php` to `femto/plugins` then add <em>Page_Extra</em> to the
+list of enabled plugins in `index.php`:
 
     $config['plugin_enabled'] = 'Page_Extra';
 
@@ -21,9 +21,9 @@ or
 
 Two additional configuration keys can be set:
 
-* `page_extra_date_format` - The format to use for dates. [See PHP
-manual](http://php.net/manual/en/function.date.php). Defaults to `jS M Y` (e.g.
-1st Jan 2014).
+* `page_extra_date_format` - The format to use for PHP's
+date](http://php.net/manual/en/function.date.php). Defaults to `jS M Y` (e.g.1st
+Jan 2014).
 
 * `page_extra_excerpt_length` - The length (in words) of the excerpt. Defaults
 to 50.
@@ -68,6 +68,6 @@ You can define an order in the header of your page.
     Order: 1
     */
 
-This can then be used to list pages in the desired order.
+This can then be used to list pages.
 
     {% for page in directory('/', 'order') %}
