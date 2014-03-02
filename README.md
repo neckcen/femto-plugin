@@ -28,6 +28,10 @@ Jan 2014).
 * `page_extra_excerpt_length` - The length (in words) of the excerpt. Defaults
 to 50.
 
+For example add in `index.php`:
+
+    $config['page_extra_excerpt_length'] = 20;
+
 Usage
 -----
 
@@ -41,7 +45,7 @@ will do.
     Date: 10 January 2014
     */
 
-The date will be available in `$page['timestamp']`as timestamp as well as in
+The date will be available in `$page['timestamp']` as timestamp as well as in
 `$page['date_formatted']` as a formatted representation according to the
 configuration.
 
