@@ -151,11 +151,15 @@ class Image {
         if(preg_match_all($re, $page['content'], $match, PREG_SET_ORDER)) {
             $url = $this->config['base_url'].'plugin/image';
             foreach ($match as $m) {
-                list($tag, $src, $alt, $title, $align1, $width, $height,
-                  $align2) = $m;
+                list($tag, $src, $alt) = $m;
                 if(preg_match('`^(https?:/|ftp:/|/)?/`', $src)) {
                     continue;
                 }
+                $title = isset($m[3]) ? $m[3] : '';
+                $align1 = isset($m[4]) ? $m[4] : '';
+                $width = isset($m[5]) ? $m[5] : 0;
+                $height = isset($m[6]) ? $m[6] : 0;
+                $align2 = isset($m[7]) ? $m[7] : '';
                 if(substr($src, 0, 10) == 'content://') {
                     $src = substr($src, 9);
                 } else {
