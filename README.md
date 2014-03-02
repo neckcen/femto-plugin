@@ -62,7 +62,7 @@ You can define an author in the header of your page.
     */
 
 ### Excerpt
-An excerpt of the page will be created and available in `$page['excerpt']`.
+An excerpt of the page is available in `$page['excerpt']`.
 
 ### Order
 You can define an order in the header of your page.
