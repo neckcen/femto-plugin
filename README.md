@@ -21,14 +21,14 @@ or
 
 Two additional configuration keys can be set:
 
-* `page_extra_date_format` - The format to use for PHP's
+* `page_extra_date_format` - The format to use for [PHP's
 date](http://php.net/manual/en/function.date.php). Defaults to `jS M Y` (e.g.1st
 Jan 2014).
 
 * `page_extra_excerpt_length` - The length (in words) of the excerpt. Defaults
 to 50.
 
-For example add in `index.php`:
+For example, add in `index.php`:
 
     $config['page_extra_excerpt_length'] = 20;
 
