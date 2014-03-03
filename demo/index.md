@@ -3,6 +3,29 @@ Title: Image Plugin Demonstration
 Description: A demonstration of the Image plugin in action.
 */
 
+<style scoped>
+/* These should go in your theme. */
+figure {
+    border:1px solid #ddd;
+    max-width:100%;
+    padding:2px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.left {
+    float:left;
+    margin:.4em .4em .4em 0;
+}
+.right {
+    float:right;
+    margin:.4em 0 .4em .4em;
+}
+.center {
+    margin:.4em auto;
+}
+</style>
+
 Image Plugin Demonstration
 ==========================
 
