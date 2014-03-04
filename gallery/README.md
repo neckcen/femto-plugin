@@ -9,7 +9,7 @@ Requirements
 ------------
 
 * [Femto](https://github.com/neckcen/femto)
-* [Image plugin](https://github.com/neckcen/femto-image)
+* [Image plugin](https://github.com/neckcen/femto-plugin/image)
 
 Installation
 ------------
