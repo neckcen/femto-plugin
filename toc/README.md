@@ -5,11 +5,6 @@ A plugin to display a table of content.
 
 See demo page for usage.
 
-Requirements
-------------
-
-* [Femto](https://github.com/neckcen/femto)
-
 Installation
 ------------
 Copy `toc.php` to `femto/plugins` then add _TOC_ to the list of enabled plugins

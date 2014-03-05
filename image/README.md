@@ -9,7 +9,6 @@ See demo page for usage.
 Requirements
 ------------
 
-* [Femto](https://github.com/neckcen/femto)
 * [PHP GD extension](http://php.net/manual/en/intro.image.php)
 * [PHP EXIF extension](http://php.net/manual/en/intro.exif.php)
 

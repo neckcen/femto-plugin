@@ -8,8 +8,7 @@ See demo page for usage.
 Requirements
 ------------
 
-* [Femto](https://github.com/neckcen/femto)
-* [Image plugin](https://github.com/neckcen/femto-plugin/image)
+* [Image plugin](https://github.com/neckcen/femto-plugin/tree/master/image)
 
 Installation
 ------------

@@ -5,11 +5,6 @@ A plugin to associate a PHP file with a page and run it before it is rendered.
 
 See demo page for usage.
 
-Requirements
-------------
-
-* [Femto](https://github.com/neckcen/femto)
-
 Installation
 ------------
 Copy `php.php` to `femto/plugins` then add _PHP_ to the list of enabled plugins

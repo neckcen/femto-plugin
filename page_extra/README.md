@@ -3,11 +3,6 @@ Page Extra plugin for Femto
 
 A plugin to add extra information to your pages.
 
-Requirements
-------------
-
-* [Femto](https://github.com/neckcen/femto)
-
 Installation
 ------------
 Copy `page_extra.php` to `femto/plugins` then add <em>Page_Extra</em> to the
