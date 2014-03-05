@@ -6,17 +6,16 @@ Femto supports plugins to extend its functions.
 Available plugins
 -----------------
 
-- [Gallery](https://github.com/neckcen/femto-plugin/gallery) - Gap-less image
-galleries.
-- [Image](https://github.com/neckcen/femto-plugin/image) - Allow displaying and
-linking
-images in the content folder.
-- [Page Extra](https://github.com/neckcen/femto-plugin/page_extra) - Extra
-information and sorting option for pages.
-- [PHP](https://github.com/neckcen/femto-plugin/php) - Run php code in your
-pages.
-- [TOC](https://github.com/neckcen/femto-plugin/toc) - Display a table of
-content.
+- [Gallery](https://github.com/neckcen/femto-plugin/tree/master/gallery) -
+Gap-less image galleries.
+- [Image](https://github.com/neckcen/femto-plugin/tree/master/image) - Link to
+and display images from the content folder.
+- [Page Extra](https://github.com/neckcen/femto-plugin/tree/master/page_extra) -
+Extra information and sorting option for pages.
+- [PHP](https://github.com/neckcen/femto-plugin/tree/master/php) - Associate PHP
+scripts with your pages.
+- [TOC](https://github.com/neckcen/femto-plugin/tree/master/toc) - Display a
+table of content.
 
 Create your own
 ---------------
@@ -32,7 +31,7 @@ case sensitive, file name will always be lower case. Plugins need to be in the
     }
 
 The plugin class can define functions with specific names -_hooks_- to be called
-when the corresponding event happen. Below is a list of available hooks, most
+when the corresponding event happens. Below is a list of available hooks, most
 parameters are passed by reference:
 
 ### __construct($config)
