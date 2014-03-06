@@ -3,17 +3,21 @@
 namespace femto\plugin;
 
 /**
- * A plugin for Femto to display neat gap-less galleries. Requires the image
- * plugin to be enabled to work.
+ * A plugin for Femto to display neat gap-less galleries.
+ *
+ * Requires the Image plugin.
  *
  * @author Sylvain Didelot
+ * @see https://github.com/neckcen/femto-plugin/tree/master/image
  * @see http://www.crispymtn.com/stories/the-algorithm-for-a-perfectly-balanced-photo-gallery
  */
 class Gallery {
     protected $config;
 
     /**
-     * Instance the plugin with given config.
+     * Instance the plugin with given configuration.
+     *
+     * Check if Image plugin is enabled.
      *
      * @param array $config The website configuration.
      */
@@ -25,7 +29,10 @@ class Gallery {
     }
 
     /**
-     * Distribute images in the same directory and insert gallery in the content.
+     * Build the gallery if requested.
+     *
+     * Search the page's content for %gallery:WIDTHxHEIGHT%. If found search for
+     * all images in the current page's directory and display them.
      *
      * @param array $page Femto page.
      */

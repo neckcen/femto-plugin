@@ -11,7 +11,7 @@ class Image {
     protected $config;
 
     /**
-     * Instance the plugin with given config.
+     * Instance the plugin with given configuration.
      *
      * @param array $config The website configuration.
      */
