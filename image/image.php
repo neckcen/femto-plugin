@@ -145,21 +145,22 @@ class Image {
      */
     public function page_complete(&$page) {
         $match = array();
-        $re = '`(?:<p>)?<img src="([^"]+)" alt="([^"]*)" '.
+        $re = '`(<p>)?<img src="([^"]+)" alt="([^"]*)" '.
           '(?:title="([^"]+)" )?/>'.
-          '(?:\[( ?)([0-9]+)(?:x([0-9]+))?( ?)\])?(?:</p>)?`';
+          '(?:\[( ?)([0-9]+)(?:x([0-9]+))?( ?)\])?(</p>)?`';
         if(preg_match_all($re, $page['content'], $match, PREG_SET_ORDER)) {
             $url = $this->config['base_url'].'plugin/image';
             foreach ($match as $m) {
-                list($tag, $src, $alt) = $m;
+                list($tag, $p1, $src, $alt) = $m;
                 if(preg_match('`^(https?:/|ftp:/|/)?/`', $src)) {
                     continue;
                 }
-                $title = isset($m[3]) ? $m[3] : '';
-                $align1 = isset($m[4]) ? $m[4] : '';
-                $width = isset($m[5]) ? $m[5] : 0;
-                $height = isset($m[6]) ? $m[6] : 0;
-                $align2 = isset($m[7]) ? $m[7] : '';
+                $title = isset($m[4]) ? $m[4] : '';
+                $align1 = isset($m[5]) ? $m[5] : '';
+                $width = isset($m[6]) ? $m[6] : 0;
+                $height = isset($m[7]) ? $m[7] : 0;
+                $align2 = isset($m[8]) ? $m[8] : '';
+                $p2 = isset($m[9]) ? $m[9] : '';
                 if(substr($src, 0, 10) == 'content://') {
                     $src = substr($src, 9);
                 } else {
@@ -187,6 +188,9 @@ class Image {
                       '<img src="%s/%s" alt="%s" title="%s"/>',
                       $url, $src, $alt, $title
                     );
+                }
+                if($p1 != '' && $p2 == '') {
+                    $tag = substr($tag, 3);
                 }
                 $page['content'] = str_replace($tag, $parsed, $page['content']);
             }
