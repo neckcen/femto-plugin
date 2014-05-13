@@ -12,6 +12,8 @@ Gap-less image galleries.
 and display images from the content folder.
 - [Page Extra](https://github.com/neckcen/femto-plugin/tree/master/page_extra) -
 Extra information and sorting option for pages.
+- [PDF](https://github.com/neckcen/femto-plugin/tree/master/pdf) - Render pages
+as PDF files.
 - [PHP](https://github.com/neckcen/femto-plugin/tree/master/php) - Associate PHP
 scripts with your pages.
 - [TOC](https://github.com/neckcen/femto-plugin/tree/master/toc) - Display a
