@@ -71,7 +71,7 @@ class Gallery {
         $gallery = sprintf('<div class="gallery" style="width:%dpx"><ul>',
             $display_width);
         $directory = substr($directory, strlen($this->config['content_dir']));
-        $url = $this->config['base_url'].'plugin/image';
+        $url = $this->config['base_url'].'/plugin/image';
         foreach($distribution as $row) {
             $total_ratio = array_sum($row) / 10000;
             $height = round($display_width / $total_ratio);

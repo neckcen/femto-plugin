@@ -149,7 +149,7 @@ class Image {
           '(?:title="([^"]+)" )?/>'.
           '(?:\[( ?)([0-9]+)(?:x([0-9]+))?( ?)\])?(</p>)?`';
         if(preg_match_all($re, $page['content'], $match, PREG_SET_ORDER)) {
-            $url = $this->config['base_url'].'plugin/image';
+            $url = $this->config['base_url'].'/plugin/image';
             foreach ($match as $m) {
                 list($tag, $p1, $src, $alt) = $m;
                 if(preg_match('`^(https?:/|ftp:/|/)?/`', $src)) {

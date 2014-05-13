@@ -50,7 +50,7 @@ class PDF {
             if(substr($base_url, 0, 2) == '//') {
                 $base_url = isset($_SERVER['HTTPS']) ?
                   'https:'.$base_url : 'http:'.$base_url;
-            } else if(substr($base_url, 0, 1) == '/') {
+            } else if(substr($base_url, 0, 1) == '/' || $base_url == '') {
                 $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
                 $http_auth = isset($_SERVER['PHP_AUTH_USER']) ?
                   $_SERVER['PHP_AUTH_USER'] : '';
@@ -72,7 +72,7 @@ class PDF {
             // attempt to create pdf
             require __DIR__.'/pdf/dompdf_config.inc.php';
             $dompdf = new \DOMPDF();
-            $dompdf->load_html_file($base_url.$page['relative_url']);
+            $dompdf->load_html_file($base_url.$page['url']);
             // fix links
             $dom = $dompdf->get_dom();
             foreach($dom->getElementsByTagName('a') as $link) {
@@ -81,8 +81,7 @@ class PDF {
                     $href = $dompdf->get_protocol().substr($href, 2);
                     $link->setAttribute('href', $href);
                 } else if (substr($href, 0, 1) == '/') {
-                    $href = $base_url.substr($href, 1);
-                    $link->setAttribute('href', $href);
+                    $link->setAttribute('href', $base_url.$href);
                 }
             }
             $dompdf->render();
