@@ -3,8 +3,6 @@ PHP plugin for Femto
 
 A plugin to associate a PHP file with a page and run it before it is rendered.
 
-See demo page for usage.
-
 Installation
 ------------
 Copy `php.php` to `femto/plugins` then add _PHP_ to the list of enabled plugins
@@ -26,6 +24,16 @@ them with submitted data. Enabled by default.
 For example, add in `index.php`:
 
     $config['php_form_validate'] = False;
+
+Usage
+-----
+Set the `php` header to the name of the script you want to run. Path is relative
+to the current page.
+
+    /*
+    Title: My Page
+    PHP: my_script.php
+    */
 
 Form validation and persistence
 -------------------------------

@@ -3,8 +3,6 @@ Gallery plugin for Femto
 
 A plugin to create neat gap-less galleries.
 
-See demo page for usage.
-
 Requirements
 ------------
 
@@ -38,3 +36,11 @@ It is recommended to add the following styles to your theme as well:
         height:auto;
         width:100%;
     }
+
+Usage
+-----
+Add `%gallery:width:height%` anywhere in the page. Width is exact total width of
+the gallery. Height is the ideal height of a single row and may vary. Both are
+expressed in pixels.
+
+    %gallery:600x200%

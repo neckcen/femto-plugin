@@ -3,8 +3,6 @@ TOC plugin for Femto
 
 A plugin to display a table of content.
 
-See demo page for usage.
-
 Installation
 ------------
 Copy `toc.php` to `femto/plugins` then add _TOC_ to the list of enabled plugins
@@ -38,3 +36,11 @@ It is recommended to add the following styles to your theme as well:
         list-style-type:none;
         margin:0;
     }
+
+Usage
+-----
+Add `%TOC%` anywhere in the page. Minimum and maximum title levels can be 
+specified optionally.
+
+    %TOC:3%
+    %TOC:2,4%
