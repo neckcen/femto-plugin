@@ -62,6 +62,10 @@ class Page_Extra {
         } else {
             $page['excerpt'] = $page['content'];
         }
+
+        $class = strtolower(str_replace(' ', '_', $page['title']));
+        $class = preg_replace('`[^-_a-z0-9]`', '', $class);
+        $page['class'] = 'page_'.$class;
     }
 
     /**
