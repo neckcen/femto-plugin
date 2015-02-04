@@ -62,7 +62,7 @@ An excerpt of the page is available in `$page['excerpt']`.
 ### Css Class
 A css class based on the page's title is available in `$page['class']`. Special 
 characters are removed, spaces are replaced by underscores and the prefix
-`page_` is added. For example `John's Home Page` would become `page_johns_home_page`.
+`page_` is added. For example `John's Home Page` becomes `page_johns_home_page`.
 
 ### Order
 You can define an order in the header of your page.
