@@ -20,10 +20,10 @@ class PHP {
      * @param array $config The website configuration.
      */
     public function __construct($config) {
-        $default = array(
+        $default = [
             'php_form_validate' => True,
             'php_form_error_class' => 'input-error',
-        );
+        ];
         $this->config = array_merge($default, $config);
     }
 
@@ -33,7 +33,7 @@ class PHP {
      *
      * @param array $header List of headers.
      */
-    public function page_before_read_header(&$header) {
+    public function page_parse_header_before(&$header) {
         $header['php'] = null;
     }
 
@@ -42,12 +42,12 @@ class PHP {
      *
      * @param array $page Femto page.
      */
-    public function page_before_parse_content(&$page) {
+    public function page_parse_content_before(&$page) {
         if($page['php']) {
-            $forms = array();
+            $forms = [];
             if($_SERVER['REQUEST_METHOD'] == 'POST'
               && $this->config['php_form_validate']) {
-                $match = array();
+                $match = [];
                 $re = '`<form.*?</form>`si';
                 preg_match_all($re, $page['content'], $match, PREG_SET_ORDER);
                 foreach($match as $m) {
@@ -85,7 +85,7 @@ class PHP {
      */
     protected function include_page($page, $forms) {
         $config = $this->config;
-        $vars = array();
+        $vars = [];
         include(dirname($page['file']).'/'.$page['php']);
         return $vars;
     }
@@ -100,7 +100,7 @@ class PHP {
             $type = $node->getAttribute('type');
             $name = $node->getAttribute('name');
             if(!$type || !$name
-              || in_array($type, array('submit', 'button', 'image', 'reset'))) {
+              || in_array($type, ['submit', 'button', 'image', 'reset'])) {
                 return;
             }
 

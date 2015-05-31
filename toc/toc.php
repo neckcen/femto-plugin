@@ -13,8 +13,8 @@ class TOC {
      *
      * @param array $page Femto page.
      */
-    public function page_complete(&$page) {
-        $match = array();
+    public function page_parse_content_after(&$page) {
+        $match = [];
         $re = '`(?:<p>)?%TOC(?::([0-9])(?:,([0-9]))?)?%(?:</p>)?`';
         if(!preg_match($re, $page['content'], $match)) {
             return;
@@ -26,7 +26,7 @@ class TOC {
             $max = $min;
         }
 
-        $match = array();
+        $match = [];
         $re = sprintf('`<h([%d-%d])>([^<]*)</h[%d-%d]>`', $min, $max, $min, $max);
         preg_match_all($re, $page['content'], $match, PREG_SET_ORDER);
         $current_level = $min;

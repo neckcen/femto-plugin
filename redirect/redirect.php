@@ -25,9 +25,8 @@ class Redirect {
      *
      * @param array $header The list of headers.
      */
-    public function page_before_read_header(&$header) {
+    public function page_parse_header_before(&$header) {
         $header['redirect'] = null;
-        $header['redirect-permanent'] = 'No';
     }
 
     /**
@@ -35,14 +34,14 @@ class Redirect {
      *
      * @param array $page a Femto page.
      */
-    public function page_before_parse_content(&$page) {
+    public function page_parse_header_after(&$page) {
         if(!empty($page['redirect'])) {
             $url = str_replace('%base_url%', $this->config['base_url'], $page['redirect']);
-            $type = strtolower($page['redirect-permanent']) == 'yes' ? 301 : 302;
-            $page['redirect'] = array(
+            $type = in_array('redirect-permanent', $page['flags']) ? 301 : 302;
+            $page['redirect'] = [
                 'to' => $url,
                 'type' => $type,
-            );
+            ];
         }
     }
 

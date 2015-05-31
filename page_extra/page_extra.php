@@ -21,10 +21,10 @@ class Page_Extra {
      * @param array $config The website configuration.
      */
     public function __construct($config) {
-        $default = array(
+        $default = [
             'page_extra_date_format' => 'jS M Y',
             'page_extra_excerpt_length' => 50,
-        );
+        ];
         $this->config = array_merge($default, $config);
     }
 
@@ -33,7 +33,7 @@ class Page_Extra {
      *
      * @param array $header The list of headers.
      */
-    public function page_before_read_header(&$header) {
+    public function page_parse_header_before(&$header) {
         $header['date'] = null;
         $header['author'] = null;
         $header['order'] = null;
@@ -44,7 +44,7 @@ class Page_Extra {
      *
      * @param array $page a Femto page.
      */
-    public function page_complete(&$page) {
+    public function page_parse_content_after(&$page) {
         if(!empty($page['date'])) {
             $page['timestamp'] = strtotime($page['date']);
             $format = $this->config['page_extra_date_format'];
@@ -76,9 +76,9 @@ class Page_Extra {
      */
     public function directory_sort(&$dir, &$sort) {
         if($sort == 'date') {
-            usort($dir, array($this, 'directory_sort_date'));
+            usort($dir, [$this, 'directory_sort_date']);
         } else if($sort == 'order') {
-            usort($dir, array($this, 'directory_sort_order'));
+            usort($dir, [$this, 'directory_sort_order']);
         }
     }
 

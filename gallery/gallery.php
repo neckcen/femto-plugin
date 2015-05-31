@@ -36,8 +36,8 @@ class Gallery {
      *
      * @param array $page Femto page.
      */
-    public function page_complete(&$page) {
-        $match = array();
+    public function page_parse_content_after(&$page) {
+        $match = [];
         $re = '`(?:<p>)?%gallery:([0-9]+)x([0-9]+)%(?:</p>)?`';
         if(!preg_match($re, $page['content'], $match)) {
             return;
@@ -45,10 +45,10 @@ class Gallery {
         list($tag, $display_width, $ideal_height) = $match;
         $directory = dirname($page['file']).'/';
         $total_width = 0;
-        $ratio_list = array();
-        $picture_by_ratio = array();
+        $ratio_list = [];
+        $picture_by_ratio = [];
         foreach(scandir($directory) as $file) {
-            if(in_array($file, array('.', '..'))) {
+            if($file == '.' || $file == '..') {
                 continue;
             }
             $size = @getimagesize($directory.$file);
@@ -59,7 +59,7 @@ class Gallery {
             $ratio = round($width / $height * 10000);
             $ratio_list[] = $ratio;
             if(!isset($picture_by_ratio[$ratio])) {
-                $picture_by_ratio[$ratio] = array();
+                $picture_by_ratio[$ratio] = [];
             }
             $picture_by_ratio[$ratio][] = $file;
             $total_width += $ideal_height * ($ratio / 10000);
@@ -77,8 +77,8 @@ class Gallery {
             $height = round($display_width / $total_ratio);
             // ensure the width sums to $display_width
             // aka largest remainder method
-            $width = array();
-            $remainder = array();
+            $width = [];
+            $remainder = [];
             foreach($row as $ratio) {
                 $dec = $height * ($ratio / 10000);
                 $int = floor($dec);
@@ -113,14 +113,14 @@ class Gallery {
      */
     protected function linear_partition($seq, $k) {
         if ($k <= 0) {
-            return array();
+            return [];
         }
 
         $n = count($seq);
 
         if ($k > $n-1) {
             foreach ($seq as &$x) {
-                $x=array($x);
+                $x=[$x];
             }
             return $seq;
         }
@@ -156,7 +156,7 @@ class Gallery {
 
         $k--;
         $n--;
-        $ans = array();
+        $ans = [];
 
         while ($k > 0) {
             array_unshift($ans, array_slice($seq,

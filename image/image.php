@@ -29,7 +29,7 @@ class Image {
         // last modified header (so browsers can cache images)
         $time = @filemtime($file);
         if($time == false) {
-            return;
+            return null;
         }
         $header = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
           strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) : 0;
@@ -53,23 +53,12 @@ class Image {
         $height = isset($_GET['h']) ? (int) $_GET['h'] : null;
 
         // create thumbnail
-        $data = null;
-        if($this->config['cache_enabled']) {
-            $hash = md5($file.$width.$height);
-            $cache = sprintf(
-              '%s/image/%s/%s/%s.jpg',
-              $this->config['cache_dir'],
-              substr($hash, 0,2), substr($hash, 2,2), $hash
-            );
-            if(@filemtime($cache) > $time) {
-                $data = file_get_contents($cache);
-            }
-        }
-        if($data == null) {
+        $cache = \femto\Cache::file($file, $width.$height);
+        if(($data = $cache->retrieve()) == null) {
             // check target exists and is an image
             $type = @exif_imagetype($file);
             if($type === false) {
-                return;
+                return null;
             }
 
             if($type == IMAGETYPE_JPEG) {
@@ -79,10 +68,10 @@ class Image {
             } else if ($type == IMAGETYPE_GIF) {
                 $img = imagecreatefromgif($file);
             } else {
-                return;
+                return null;
             }
             if($img == false) {
-                return;
+                return null;
             }
 
             // create thumbnail
@@ -99,18 +88,15 @@ class Image {
             // save it and destroy resources
             ob_start();
             imagejpeg($thumb, null, 65);
-            $data = ob_get_clean();
+            $data = base64_encode(ob_get_clean());
+            $cache->store($data);
             imagedestroy($img);
             imagedestroy($thumb);
-            if($this->config['cache_enabled']) {
-                @mkdir(dirname($cache), 0777, true);
-                file_put_contents($cache, $data);
-            }
         }
 
         // display image
         header('Content-type: image/jpg');
-        echo $data;
+        echo base64_decode($data);
         exit();
     }
 
@@ -143,8 +129,8 @@ class Image {
      *
      * @param array $page Femto page.
      */
-    public function page_complete(&$page) {
-        $match = array();
+    public function page_parse_content_after(&$page) {
+        $match = [];
         $re = '`(<p>)?<img src="([^"]+)" alt="([^"]*)" '.
           '(?:title="([^"]+)" )?/>'.
           '(?:\[( ?)([0-9]+)(?:x([0-9]+))?( ?)\])?(</p>)?`';
