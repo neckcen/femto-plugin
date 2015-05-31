@@ -77,7 +77,7 @@ served from cache. Page content cache can be disabled with the `no-cache` flag.
 Called before rendering the page with the appropriate template. This hook is not
 called if the `no-theme` flag is set.
 
-### render_after(&$output)
+### render_after(&$output, $with_theme)
 Called just before displaying the page with the final output.
 
 ### directory_complete(&$directory)
