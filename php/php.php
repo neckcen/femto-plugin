@@ -83,7 +83,7 @@ class PHP {
      * @param array $page Femto page.
      * @param array $forms List of validated forms.
      */
-    protected function include_page($page, $forms) {
+    protected function include_page(&$page, $forms) {
         $config = $this->config;
         $vars = [];
         include(dirname($page['file']).'/'.$page['php']);
