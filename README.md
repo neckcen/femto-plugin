@@ -6,6 +6,8 @@ Femto supports plugins to extend its functions.
 Available plugins
 -----------------
 
+- [Directory](https://github.com/neckcen/femto-plugin/tree/master/directory) - 
+Display a list of page in a directory.
 - [Gallery](https://github.com/neckcen/femto-plugin/tree/master/gallery) -
 Gap-less image galleries.
 - [Image](https://github.com/neckcen/femto-plugin/tree/master/image) - Link to

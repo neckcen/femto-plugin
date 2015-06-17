@@ -134,53 +134,53 @@ class Image {
         $re = '`(<p>)?<img src="([^"]+)" alt="([^"]*)" '.
           '(?:title="([^"]+)" )?/>'.
           '(?:\[( ?)([0-9]+)(?:x([0-9]+))?( ?)\])?(</p>)?`';
-        if(preg_match_all($re, $page['content'], $match, PREG_SET_ORDER)) {
-            $url = $this->config['base_url'].'/plugin/image';
-            foreach ($match as $m) {
-                list($tag, $p1, $src, $alt) = $m;
-                if(preg_match('`^(https?:/|ftp:/|/)?/`', $src)) {
-                    continue;
-                }
-                $title = isset($m[4]) ? $m[4] : '';
-                $align1 = isset($m[5]) ? $m[5] : '';
-                $width = isset($m[6]) ? $m[6] : 0;
-                $height = isset($m[7]) ? $m[7] : 0;
-                $align2 = isset($m[8]) ? $m[8] : '';
-                $p2 = isset($m[9]) ? $m[9] : '';
-                if(substr($src, 0, 10) == 'content://') {
-                    $src = substr($src, 9);
-                } else {
-                    $src = dirname($page['file']).'/'.$src;
-                    $src = substr($src, strlen($this->config['content_dir']));
-                }
-                if($width) {
-                    $align = 'center';
-                    if($align1 == ' ' && $align2 == '') {
-                        $align = 'right';
-                    } else if($align1 == '' && $align2 == ' ') {
-                        $align = 'left';
-                    }
-                    if($title) {
-                        $title = '<figcaption>'.$title.'</figcaption>';
-                    }
-                    $parsed = sprintf(
-                      '<figure class="%s" style="width:%dpx;"><a href="%s/%s">'.
-                      '<img src="%s/%s?w=%d&amp;h=%d" alt="%s"/></a>%s</figure>',
-                      $align, $width, $url, $src,
-                      $url, $src, $width, $height, $alt, $title
-                    );
-                } else {
-                    $parsed = sprintf(
-                      '<img src="%s/%s" alt="%s" title="%s"/>',
-                      $url, $src, $alt, $title
-                    );
-                }
-                if($p1 != '' && $p2 == '') {
-                    $tag = substr($tag, 3);
-                }
-                $page['content'] = str_replace($tag, $parsed, $page['content']);
-            }
+        if(!preg_match_all($re, $page['content'], $match, PREG_SET_ORDER)) {
+            return;
         }
-
+        $url = $this->config['base_url'].'/plugin/image';
+        foreach ($match as $m) {
+            list($tag, $p1, $src, $alt) = $m;
+            if(preg_match('`^(https?:/|ftp:/|/)?/`', $src)) {
+                continue;
+            }
+            $title = isset($m[4]) ? $m[4] : '';
+            $align1 = isset($m[5]) ? $m[5] : '';
+            $width = isset($m[6]) ? $m[6] : 0;
+            $height = isset($m[7]) ? $m[7] : 0;
+            $align2 = isset($m[8]) ? $m[8] : '';
+            $p2 = isset($m[9]) ? $m[9] : '';
+            if(substr($src, 0, 10) == 'content://') {
+                $src = substr($src, 9);
+            } else {
+                $src = dirname($page['file']).'/'.$src;
+                $src = substr($src, strlen($this->config['content_dir']));
+            }
+            if($width) {
+                $align = 'center';
+                if($align1 == ' ' && $align2 == '') {
+                    $align = 'right';
+                } else if($align1 == '' && $align2 == ' ') {
+                    $align = 'left';
+                }
+                if($title) {
+                    $title = '<figcaption>'.$title.'</figcaption>';
+                }
+                $parsed = sprintf(
+                  '<figure class="%s" style="width:%dpx;"><a href="%s/%s">'.
+                  '<img src="%s/%s?w=%d&amp;h=%d" alt="%s"/></a>%s</figure>',
+                  $align, $width, $url, $src,
+                  $url, $src, $width, $height, $alt, $title
+                );
+            } else {
+                $parsed = sprintf(
+                  '<img src="%s/%s" alt="%s" title="%s"/>',
+                  $url, $src, $alt, $title
+                );
+            }
+            if($p1 != '' && $p2 == '') {
+                $tag = substr($tag, 3);
+            }
+            $page['content'] = str_replace($tag, $parsed, $page['content']);
+        }
     }
 }
