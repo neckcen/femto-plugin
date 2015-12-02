@@ -53,7 +53,7 @@ class PHP {
                 foreach($match as $m) {
                     $document = new \DOMDocument();
                     $document->encoding = 'UTF-8';
-                    $document->loadHTML($m[0]);
+                    $document->loadHTML('<?xml encoding="utf-8" ?>'.$m[0]);
                     $node = $document->getElementsByTagName('form')->item(0);
                     $this->is_valid = True;
                     $this->validate($node);
