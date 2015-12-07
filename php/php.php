@@ -69,7 +69,7 @@ class PHP {
             $vars = $this->include_page($page, $forms);
             if(!empty($vars)) {
                 foreach($vars as $key=>$value) {
-                    $key = '%'.$key.'%';
+                    $key = ['%'.$key.'%', 'php="'.$key.'"'];
                     $page['content'] = str_replace($key, $value, $page['content']);
                 }
             }
