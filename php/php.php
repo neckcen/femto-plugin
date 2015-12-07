@@ -66,8 +66,44 @@ class PHP {
                       $document->saveHTML($node), $page['content']);
                 }
             }
-            $vars = $this->include_page($page, $forms);
-            if(!empty($vars)) {
+            $vars = [];
+            $return = $this->include_page($page, $vars, $forms);
+            if(!is_array($return)) {
+                $return = [$return];
+            }
+            if($return[0] == 'redirect') {
+                $to = isset($return[1]) ? $return[1] : '%self%';
+                $code = isset($return[2]) ? (int) $return[2] : 303;
+                $seek = [
+                    '%self_qsa%',
+                    '%self%',
+                    '%dir%',
+                    '%base%',
+                ];
+                $replace = [
+                    $this->config['base_url'].$page['url'].'?'.$_SERVER['QUERY_STRING'],
+                    $this->config['base_url'].$page['url'],
+                    $this->config['base_url'].$page['dir_url'],
+                    $this->config['base_url'],
+                ];
+                $to = str_replace($seek, $replace, $to);
+                header('Location: '.$to, true, $code);
+                exit();
+
+            } else if($return[0] == 'error') {
+                header('Internal Server Error', true, 500);
+                if(count($return) > 2) {
+                    $page['title'] = $return[1];
+                    $page['content'] = $return[2];
+                } else if(count($return) > 1) {
+                    $page['title'] = 'Error 500';
+                    $page['content'] = $return[1];
+                } else {
+                    $page['title'] = 'Error 500';
+                    $page['content'] = 'Internal Server Error';
+                }
+
+            } else if(!empty($vars)) {
                 foreach($vars as $key=>$value) {
                     $key = ['%'.$key.'%', 'php="'.$key.'"'];
                     $page['content'] = str_replace($key, $value, $page['content']);
@@ -81,13 +117,12 @@ class PHP {
      * in order to have a clean environment.
      *
      * @param array $page Femto page.
+     * @param array $vars Variables to be substituted in page's content.
      * @param array $forms List of validated forms.
      */
-    protected function include_page(&$page, $forms) {
+    protected function include_page(&$page, &$vars, $forms) {
         $config = $this->config;
-        $vars = [];
-        include(dirname($page['file']).'/'.$page['php']);
-        return $vars;
+        return include(dirname($page['file']).'/'.$page['php']);
     }
 
     /**
