@@ -7,7 +7,7 @@ namespace femto\plugin;
  *
  * @author Sylvain Didelot
  */
-class PHP {
+class PHP_legacy {
     protected $config;
     protected $is_valid;
 

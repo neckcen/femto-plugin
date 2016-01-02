@@ -28,7 +28,7 @@ class Image {
         $file = $this->config['content_dir'].$url;
         // last modified header (so browsers can cache images)
         $time = @filemtime($file);
-        if($time == false) {
+        if($time === false) {
             return null;
         }
         $header = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ?
@@ -47,14 +47,15 @@ class Image {
                 readfile($file);
                 exit();
             }
+            return;
         }
         //get info from GET
         $width = (int) $_GET['w'];
         $height = isset($_GET['h']) ? (int) $_GET['h'] : null;
 
         // create thumbnail
-        $cache = \femto\Cache::file($file, $width.$height);
-        if(($data = $cache->retrieve()) == null) {
+        $cache = new \femto\Cache($file.$width.$height, ['raw'=>true]);
+        if(($data = $cache->retrieve($time)) == null) {
             // check target exists and is an image
             $type = @exif_imagetype($file);
             if($type === false) {
@@ -88,7 +89,7 @@ class Image {
             // save it and destroy resources
             ob_start();
             imagejpeg($thumb, null, 65);
-            $data = base64_encode(ob_get_clean());
+            $data = ob_get_clean();
             $cache->store($data);
             imagedestroy($img);
             imagedestroy($thumb);
@@ -96,7 +97,7 @@ class Image {
 
         // display image
         header('Content-type: image/jpg');
-        echo base64_decode($data);
+        echo $data;
         exit();
     }
 
