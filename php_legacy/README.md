@@ -1,29 +1,32 @@
-PHP plugin for Femto
-====================
+PHP legacy plugin for Femto
+===========================
 
 A plugin to associate a PHP file with a page and run it before it is rendered.
 
+*Support for this plugin has been discontinued. Please use the
+[PHP plugin](https://github.com/neckcen/femto-plugin/tree/master/php) instead.*
+
 Installation
 ------------
-Copy `php.php` to `femto/plugins` then add _PHP_ to the list of enabled plugins
-in `index.php`:
+Copy `php.php` to `femto/plugins` then add _PHP_legacy_ to the list of enabled
+plugins in `index.php`:
 
-    $config['plugin_enabled'] = 'PHP';
+    $config['plugin_enabled'] = 'PHP_legacy';
 
 or
 
-    $config['plugin_enabled'] = 'Other_Plugin,PHP';
+    $config['plugin_enabled'] = 'Other_Plugin,PHP_legacy';
 
 Two additional configuration keys can be set:
 
-* `php_form_validate` - Whether the plugin should validate forms and populate
+* `php_legacy_form_validate` - Whether the plugin should validate forms and populate
 them with submitted data. Enabled by default.
 
-* `php_form_error_class` - Name of the class to add to incorrect fields.
+* `php_legacy_form_error_class` - Name of the class to add to incorrect fields.
 
 For example, add in `index.php`:
 
-    $config['php_form_validate'] = False;
+    $config['php_legacy_form_validate'] = False;
 
 Usage
 -----

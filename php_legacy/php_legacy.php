@@ -21,8 +21,8 @@ class PHP_legacy {
      */
     public function __construct($config) {
         $default = [
-            'php_form_validate' => True,
-            'php_form_error_class' => 'input-error',
+            'php_legacy_form_validate' => True,
+            'php_legacy_form_error_class' => 'input-error',
         ];
         $this->config = array_merge($default, $config);
     }
@@ -46,7 +46,7 @@ class PHP_legacy {
         if($page['php']) {
             $forms = [];
             if($_SERVER['REQUEST_METHOD'] == 'POST'
-              && $this->config['php_form_validate']) {
+              && $this->config['php_legacy_form_validate']) {
                 $match = [];
                 $re = '`<form.*?</form>`si';
                 preg_match_all($re, $page['content'], $match, PREG_SET_ORDER);
@@ -233,8 +233,8 @@ class PHP_legacy {
      */
     protected function invalid($node) {
         $css = explode(' ', $node->getAttribute('class'));
-        if(!in_array($this->config['php_form_error_class'], $css)) {
-            $css[] = $this->config['php_form_error_class'];
+        if(!in_array($this->config['php_legacy_form_error_class'], $css)) {
+            $css[] = $this->config['php_legacy_form_error_class'];
         }
         $node->setAttribute('class', implode(' ', $css));
         $this->is_valid = False;

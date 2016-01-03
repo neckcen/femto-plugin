@@ -1,12 +1,12 @@
 /*
-Title: PHP Plugin Demonstration
-Description: A demonstration of the PHP plugin in action.
+Title: PHP legacy Plugin Demonstration
+Description: A demonstration of the PHP legacy plugin in action.
 PHP: index.php
 No-Cache: page
 */
 
-PHP Plugin Demonstration
-========================
+PHP legacy Plugin Demonstration
+===============================
 
 Variable substitution
 ---------------------
