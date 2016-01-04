@@ -8,6 +8,11 @@ namespace femto\plugin;
  * @author Sylvain Didelot
  */
 class PDF {
+    /**
+     * Configuration.
+     *
+     * @var array
+     */
     protected $config;
 
     /**

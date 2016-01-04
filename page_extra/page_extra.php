@@ -8,6 +8,21 @@ namespace femto\plugin;
  * @author Sylvain Didelot
  */
 class Page_Extra {
+    /**
+     * Default configuration.
+     *
+     * @var array
+     */
+    public static $default = [
+        'page_extra_date_format' => 'jS M Y',
+        'page_extra_excerpt_length' => 50,
+    ];
+
+    /**
+     * This instance's configuration.
+     *
+     * @var array
+     */
     protected $config;
 
     /**
@@ -21,11 +36,7 @@ class Page_Extra {
      * @param array $config The website configuration.
      */
     public function __construct($config) {
-        $default = [
-            'page_extra_date_format' => 'jS M Y',
-            'page_extra_excerpt_length' => 50,
-        ];
-        $this->config = array_merge($default, $config);
+        $this->config = $config + self::$default;
     }
 
     /**

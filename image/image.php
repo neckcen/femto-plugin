@@ -8,6 +8,11 @@ namespace femto\plugin;
  * @author Sylvain Didelot
  */
 class Image {
+    /**
+     * Configuration.
+     *
+     * @var array
+     */
     protected $config;
 
     /**

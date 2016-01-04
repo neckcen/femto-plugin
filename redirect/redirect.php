@@ -9,6 +9,11 @@ namespace femto\plugin;
  * @author Sylvain Didelot
  */
 class Redirect {
+    /**
+     * Configuration.
+     *
+     * @var array
+     */
     protected $config;
 
     /**

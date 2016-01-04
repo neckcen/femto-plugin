@@ -12,6 +12,11 @@ namespace femto\plugin;
  * @see http://www.crispymtn.com/stories/the-algorithm-for-a-perfectly-balanced-photo-gallery
  */
 class Gallery {
+    /**
+     * Configuration.
+     *
+     * @var array
+     */
     protected $config;
 
     /**
