@@ -61,5 +61,5 @@ displayed, disable page-level caching in the header:
     /*
     Title: My Page
     PHP: my_script.php
-    No-Cache: page
+    Flags: no-cache
     */

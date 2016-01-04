@@ -2,7 +2,7 @@
 Title: PHP legacy Plugin Demonstration
 Description: A demonstration of the PHP legacy plugin in action.
 PHP: index.php
-No-Cache: page
+Flags: no-cache
 */
 
 PHP legacy Plugin Demonstration
