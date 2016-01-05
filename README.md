@@ -18,8 +18,10 @@ and display images from the content folder.
 Extra information and sorting option for pages.
 - [PDF](https://github.com/neckcen/femto-plugin/tree/master/pdf) - Render pages
 as PDF files.
-- [PHP](https://github.com/neckcen/femto-plugin/tree/master/php) - Associate PHP
-scripts with your pages.
+- [PHP](https://github.com/neckcen/femto-plugin/tree/master/php) - Add PHP code
+to your pages.
+- [PHP Legacy](https://github.com/neckcen/femto-plugin/tree/master/php_legacy) -
+Associate PHP scripts with your pages.
 - [Redirect](https://github.com/neckcen/femto-plugin/tree/master/redirect) - 
 Redirect a page to somewhere else.
 - [TOC](https://github.com/neckcen/femto-plugin/tree/master/toc) - Display a
@@ -77,7 +79,7 @@ served from cache. Page content cache can be disabled with the `no-cache` flag.
 Called after parsing a page's content. This hook is not called if the page is 
 served from cache. Page content cache can be disabled with the `no-cache` flag.
 
-### render_before(&$twig_vars, &$twig, &$template)
+### render_before(&$variables, &$template)
 Called before rendering the page with the appropriate template. This hook is not
 called if the `no-theme` flag is set.
 
