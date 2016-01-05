@@ -68,7 +68,7 @@ From the command line switch to the directory where dompdf will reside and run
 the following commands:
 
 ```sh
-git clone https://github.com/dompdf/dompdf.git
+git clone https://github.com/dompdf/dompdf.git .
 git submodule init
 git submodule update
 ```
@@ -127,7 +127,7 @@ Limitations (Known Issues)
  * large files or large tables can take a while to render
  * CSS float is not supported (but is in the works, enable it through the
    `DOMPDF_ENABLE_CSS_FLOAT` configuration constant).
- * If you find this project useful, please consider making a donation.
-
+ 
+If you find this project useful, please consider making a donation.
 (Any funds donated will be used to help further development on this project.)	
 [![Donate button](https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif)](http://goo.gl/DSvWf)

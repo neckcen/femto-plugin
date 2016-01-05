@@ -5,6 +5,8 @@ namespace femto\plugin;
 /**
  * A plugin for Femto to render pages as PDF.
  *
+ * @see https://github.com/dompdf/dompdf
+ *
  * @author Sylvain Didelot
  */
 class PDF {
@@ -37,26 +39,22 @@ class PDF {
         }
 
         // check for cache
-        $data = null;
-        if($this->config['cache_enabled']) {
-            $hash = md5($page['file']);
-            $cache = sprintf(
-              '%s/pdf/%s/%s/%s.pdf',
-              $this->config['cache_dir'],
-              substr($hash, 0,2), substr($hash, 2,2), $hash
-            );
-            if(@filemtime($cache) > $time) {
-                $data = file_get_contents($cache);
+        $cache = new \femto\FileCache($page['file'], 'pdf', ['raw'=>True]);
+        if(($data = $cache->retrieve()) === null) {
+            if(in_array('no-theme', $page['flags'])) {
+                $data = $page['content'];
+            } else {
+                $template = new \femto\Template($page['template'].'.html.php');
+                $template['page'] = $page;
+                $data = (string) $template;
             }
-        }
-        if($data == null) {
+
             // build fully qualified base url
+            $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
             $base_url = $this->config['base_url'];
             if(substr($base_url, 0, 2) == '//') {
-                $base_url = isset($_SERVER['HTTPS']) ?
-                  'https:'.$base_url : 'http:'.$base_url;
+                $base_url = $protocol.':'.$base_url;
             } else if(substr($base_url, 0, 1) == '/' || $base_url == '') {
-                $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
                 $http_auth = isset($_SERVER['PHP_AUTH_USER']) ?
                   $_SERVER['PHP_AUTH_USER'] : '';
                 if(isset($_SERVER['PHP_AUTH_PW'])) {
@@ -74,30 +72,25 @@ class PDF {
                   $_SERVER['SERVER_NAME'], $port, $base_url);
             }
 
-            // attempt to create pdf
+            // create pdf
             require __DIR__.'/pdf/dompdf_config.inc.php';
             $dompdf = new \DOMPDF();
             $dompdf->load_html_file($base_url.$page['url']);
-            // fix links
             $dom = $dompdf->get_dom();
             foreach($dom->getElementsByTagName('a') as $link) {
                 $href = $link->getAttribute('href');
                 if(substr($href, 0, 2) == '//') {
-                    $href = $dompdf->get_protocol().substr($href, 2);
-                    $link->setAttribute('href', $href);
+                    $link->setAttribute('href', $protocol.':'.$href);
                 } else if (substr($href, 0, 1) == '/') {
                     $link->setAttribute('href', $base_url.$href);
                 }
             }
             $dompdf->render();
             $data = $dompdf->output();
-            if($this->config['cache_enabled']) {
-                @mkdir(dirname($cache), 0777, true);
-                file_put_contents($cache, $data);
-            }
+            $cache->store($data);
         }
 
-        // display image
+        // display PDF
         header('Content-type: application/pdf');
         echo $data;
         exit();
