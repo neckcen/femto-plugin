@@ -36,13 +36,13 @@ class PHP {
      * @param array $page Femto page.
      */
     public function page_parse_content_before(&$page) {
-        // only act for php pages
-        if(!in_array('php', $page['flags'])) {
+        // only act for php pages and avoid loop when php-emulate-femto is on
+        if(!in_array('php', $page['flags']) || isset($page['php_emulate'])) {
             return;
         }
 
         // copy the content to a separate file
-        $hash = $page['file'];
+        $hash = md5($page['file']);
         $file = sprintf('%s/php/%s/%s/%s.php',
           $this->config['cache_dir'],
           substr($hash, 0, 2),
@@ -85,14 +85,19 @@ class PHP {
         } else {
             ob_end_flush();
         }
-        // Treat $page['content'] like femto would. As php scripts are not
-        // cached, using markdown is not recommended (set the no-markdown flag
-        // to disable markdown parsing).
-        $page['content'] = str_replace('%base_url%', $this->config['base_url'], $page['content']);
-        $page['content'] = str_replace('%dir_url%', $page['dir_url'], $page['content']);
-        $page['content'] = str_replace('%self_url%', $page['url'], $page['content']);
-        if(!in_array('no-markdown', $page['flags'])) {
-            $page['content'] = \Michelf\MarkdownExtra::defaultTransform($page['content']);
+        // Treat $page['content'] like femto would if php-emulate-femto is set.
+        // As php scripts are not cached, using markdown is not recommended
+        // (set the no-markdown flag to disable markdown parsing).
+        if(in_array('php-emulate-femto', $page['flags'])) {
+            $page['php_emulate'] = True;
+            \femto\hook('page_parse_content_before', [&$page]);
+            $page['content'] = str_replace('%base_url%', $this->config['base_url'], $page['content']);
+            $page['content'] = str_replace('%dir_url%', $page['dir_url'], $page['content']);
+            $page['content'] = str_replace('%self_url%', $page['url'], $page['content']);
+            if(!in_array('no-markdown', $page['flags'])) {
+                $page['content'] = \Michelf\MarkdownExtra::defaultTransform($page['content']);
+            }
+            \femto\hook('page_parse_content_after', [&$page]);
         }
     }
 }

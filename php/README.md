@@ -29,9 +29,14 @@ If your content folder is visible from the web (which should not be the case),
 then be aware that the PHP code within Femto pages will be displayed as plain 
 text when pages files are accessed directly.
 
-Ouput of pages with the `php` flag set is never cached, thus setting the 
-`no-cache` flag as well is redundant. For the same reason, it is recommended to
-set the `no-markdown` flag when possible to increase performances.
+Content of pages with the `php` flag set is never cached, thus setting the 
+`no-cache` flag as well is redundant.
+
+Content of pages with the `php` flag is not processed any further by default. If 
+you want to emulate the usual Femto behaviour (%variable% substitution, other 
+plugins, markdown), then you need to set the `php-emulate-femto` flag. This can
+have a significant impact on performances. You can disable markdown with the 
+`no-markdown` flag to mitigate the problem a bit.
 
 Your script has access to `$config` which contains the website's configuration
 and `$page` which contains the current page's information. If your code sets
