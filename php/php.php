@@ -50,7 +50,7 @@ class PHP {
           $hash
         );
         @mkdir(dirname($file), 0777, true);
-        file_put_contents($file, ltrim($page['content']));
+        file_put_contents($file, $page['content']);
 
         // then blank the content and ensure cache is activated (as it has no
         // effect on the now separate script).
