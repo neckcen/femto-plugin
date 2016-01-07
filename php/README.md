@@ -29,15 +29,19 @@ If your content folder is visible from the web (which should not be the case),
 then be aware that the PHP code within Femto pages will be displayed as plain 
 text when pages files are accessed directly.
 
-PHP code is never cached, thus setting the `no-cache` flag is redundant. For the
-same reason, it is recommended to set the `no-markdown` flag when possible to
-increase performances.
+Ouput of pages with the `php` flag set is never cached, thus setting the 
+`no-cache` flag as well is redundant. For the same reason, it is recommended to
+set the `no-markdown` flag when possible to increase performances.
 
 Your script has access to `$config` which contains the website's configuration
 and `$page` which contains the current page's information. If your code sets
 `$page['content']` then it will be used and output will be sent directly to the
 browser. If `$page['content']` is null then your script's output will be used as
 the page's content.
+
+Since the PHP code is not run directly from the page, magic constants like
+`__FILE__` and `__DIR__` will return unexpected results. Use `$page['file']` and
+`dirname($page['file'])` instead.
 
 Forms validation and persistence
 --------------------------------
