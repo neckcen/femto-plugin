@@ -52,12 +52,16 @@ class PHP {
         @mkdir(dirname($file), 0777, true);
         file_put_contents($file, $page['content']);
 
-        // then blank the content and ensure cache is activated (as it has no
-        // effect on the now separate script).
+        // ensure cache is activated as script's output isn't cached any way.
         $nocache = array_search('no-cache', $page['flags']);
         if($nocache !== false) {
             unset($page['flags'][$nocache]);
         }
+        // ensure no-markdown is set but keep previous set state in
+        // 'php-no-markdown'
+        $page['flags'][] = in_array('no-markdown', $page['flags']) ?
+          'php-no-markdown' : 'no-markdown';
+        // blank content
         $page['content'] = '';
         $page['php_file'] = $file;
     }
@@ -73,14 +77,12 @@ class PHP {
             return;
         }
         // include the script created earlier
-        $page['content'] = null; // markdown parsing adds a newline at the end
-                                 // so it is safer to reset the content here.
         $config = $this->config;
         ob_start();
         include $page['php_file'];
         // if the script does not set $page['content'] then assume the output is
         // the content
-        if($page['content'] === null) {
+        if(empty($page['content'])) {
             $page['content'] = ob_get_clean();
         } else {
             ob_end_flush();
@@ -94,7 +96,7 @@ class PHP {
             $page['content'] = str_replace('%base_url%', $this->config['base_url'], $page['content']);
             $page['content'] = str_replace('%dir_url%', $page['dir_url'], $page['content']);
             $page['content'] = str_replace('%self_url%', $page['url'], $page['content']);
-            if(!in_array('no-markdown', $page['flags'])) {
+            if(!in_array('php-no-markdown', $page['flags'])) {
                 $page['content'] = \Michelf\MarkdownExtra::defaultTransform($page['content']);
             }
             \femto\hook('page_parse_content_after', [&$page]);
