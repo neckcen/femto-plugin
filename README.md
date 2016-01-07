@@ -8,6 +8,8 @@ Available plugins
 
 [Download all plugins](https://github.com/neckcen/femto-plugin/releases/latest).
 
+- [Add Trailing Slash](https://github.com/neckcen/femto-plugin/tree/master/add_trailing_slash) - 
+Redirect to the subfolder of the same name if a page doesn't exist.
 - [Directory](https://github.com/neckcen/femto-plugin/tree/master/directory) - 
 Display a list of page in a directory.
 - [Gallery](https://github.com/neckcen/femto-plugin/tree/master/gallery) -
