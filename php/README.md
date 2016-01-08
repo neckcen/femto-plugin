@@ -48,6 +48,10 @@ Since the PHP code is not run directly from the page, magic constants like
 `__FILE__` and `__DIR__` will return unexpected results. Use `$page['file']` and
 `dirname($page['file'])` instead.
 
+If you `return` a non-null value within your script, the value will be displayed
+as an error. You can also return an array in which case the first element will 
+be used as title and the second as error message.
+
 Forms validation and persistence
 --------------------------------
 This function is available as a separate class: `\femto\plugin\PHP\Form`.

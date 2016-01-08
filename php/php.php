@@ -79,7 +79,20 @@ class PHP {
         // include the script created earlier
         $config = $this->config;
         ob_start();
-        include $page['php_file'];
+        $return = include $page['php_file'];
+
+        // if return isn't null assume an error
+        if($return) {
+            header('Internal Server Error', true, 500);
+            if(is_array($return)) {
+                $page['title'] = isset($return[0]) ? $return[0] : 'Error 500';
+                $page['content'] = isset($return[1]) ? $return[1] : 'Error';
+            } else {
+                $page['title'] = 'Error 500';
+                $page['content'] = $return;
+            }
+            return;
+        }
         // if the script does not set $page['content'] then assume the output is
         // the content
         if(empty($page['content'])) {
