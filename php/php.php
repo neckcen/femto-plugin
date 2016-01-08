@@ -82,7 +82,7 @@ class PHP {
         $return = include $page['php_file'];
 
         // if return isn't null or true assume an error
-        if($return !== null || $return !== True) {
+        if($return != null && $return != True) {
             ob_end_clean();
             header('Internal Server Error', true, 500);
             if(is_array($return)) {
