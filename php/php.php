@@ -41,6 +41,20 @@ class PHP {
             return;
         }
 
+        // insert namespace and calculate how much space the header takes which
+        // allows for accurate line numbers in case of errors
+        $content = file_get_contents($page['file']);
+        $start = strpos($content, $page['content']);
+        $lines = substr_count($content, "\n", 0, $start);
+        $content = '<?php namespace femto\plugin\PHP;';
+        for ($i=0; $i < $lines; $i++) {
+            $content .= "\n";
+        }
+        if(substr($page['content'], 0, 5) == '<?php') {
+            $content .= substr($page['content'], 5);
+        } else {
+            $content .= '?>'.$page['content'];
+        }
         // copy the content to a separate file
         $hash = md5($page['file']);
         $file = sprintf('%s/php/%s/%s/%s.php',
@@ -50,7 +64,7 @@ class PHP {
           $hash
         );
         @mkdir(dirname($file), 0777, true);
-        file_put_contents($file, $page['content']);
+        file_put_contents($file, $content);
 
         // ensure cache is activated as script's output isn't cached any way.
         $nocache = array_search('no-cache', $page['flags']);
@@ -80,10 +94,10 @@ class PHP {
         $config = $this->config;
         ob_start();
         $return = include $page['php_file'];
+        $content = ob_get_clean();
 
         // if return isn't null or true assume an error
         if($return != null && $return != True) {
-            ob_end_clean();
             header('Internal Server Error', true, 500);
             if(is_array($return)) {
                 $page['title'] = isset($return[0]) ? $return[0] : 'Error 500';
@@ -94,12 +108,9 @@ class PHP {
             }
             return;
         }
-        // if the script does not set $page['content'] then assume the output is
-        // the content
-        if(empty($page['content'])) {
-            $page['content'] = ob_get_clean();
-        } else {
-            ob_end_flush();
+        // if $content isn't empty then use it as page's content
+        if(!empty($content)) {
+            $page['content'] = $content;
         }
         // Treat $page['content'] like femto would if php-emulate-femto is set.
         // As php scripts are not cached, using markdown is not recommended
@@ -118,7 +129,95 @@ class PHP {
 }
 
 }
+
+// useful things available to PHP scripts
 namespace femto\plugin\PHP {
+
+/**
+ * Proxy to \femto\page()
+ *
+ * @see \femto\page()
+ *
+ * @param string $url The url to resolve
+ * @return array Femto page, null if not found
+ */
+function page($url) {
+    return \femto\page($url);
+}
+
+/**
+ * Proxy to \femto\directory()
+ *
+ * @see \femto\directory()
+ *
+ * @param string $url The url to list
+ * @param string $sort Sorting criteria
+ * @param string $order Sorting order
+ * @return array List of Femto pages with content removed
+ */
+function directory($url, $sort='alpha', $order='asc') {
+    return \femto\directory($url, $sort, $order);
+}
+
+/**
+ * Redirect to a different page or url. Optionally append (part of) the query
+ * string.
+ *
+ * Usage:
+ *
+ * // redirect to a different femto page
+ * redirect(page('/page'));
+ *
+ * // redirect to an arbitrary url
+ * redirect('http://php.net');
+ *
+ * // use a different redirect code
+ * redirect('http://php.net', 301);
+ *
+ * // append the entire query string
+ * redirect('http://php.net', 301, True);
+ *
+ * // append specific query string ($_GET) variable
+ * redirect('http://php.net', 301, ['variable1']);
+ *
+ * // append new query string variable
+ * redirect('http://php.net', 301, ['variable1'=>'value1']);
+ *
+ * // combine both previous examples
+ * redirect('http://php.net', 301, ['existing_variable', 'variable1'=>'value1']);
+ *
+ * @see http://racksburg.com/choosing-an-http-status-code/
+ * @see page()
+ *
+ * @param mixed $page Femto page or url to redirect to.
+ * @param int $code HTTP code to send
+ * @param mixed $qsa True to append the entire query string or an array of keys
+ */
+function redirect($to, $code=303, $qsa=null) {
+    // redirect to a different femto page
+    if(is_array($to) && isset($to['url'])) {
+        $to = \femto\_::$config['base_url'].$to['url'];
+        // append the query string
+        if($qsa) {
+            $to .= '?';
+            if(is_array($qsa)) {
+                foreach($qsa as $key => $value) {
+                    if(is_string($key)) {
+                        $to .= $key.'='.urlencode($value).'&';
+                    } else if (isset($_GET[$value])) {
+                        $to .= $value.'='.urlencode($_GET[$value]).'&';
+                    }
+                }
+                $to = substr($to, 0, -1);
+            } else {
+                $to .= $_SERVER['QUERY_STRING'];
+            }
+        }
+    }
+    echo $to; exit();
+    header('Location: '.$to, true, $code);
+    exit();
+}
 
 /**
  * Class to make forms easier.

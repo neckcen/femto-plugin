@@ -3,6 +3,10 @@ PHP plugin for Femto
 
 A plugin to allow PHP code within Femto pages.
 
+**Note on security:** If your content folder is visible from the web (which 
+should not be the case), then be aware that the PHP code within Femto pages 
+will be displayed as plain text when accessed directly.
+
 Installation
 ------------
 Copy `php.php` to `femto/plugins` then add _PHP_ to the list of enabled plugins
@@ -14,6 +18,7 @@ or
 
     $config['plugin_enabled'] = 'Other_Plugin,PHP';
 
+
 Usage
 -----
 Set the `php` flag in the header of the page which contains PHP code.
@@ -23,38 +28,104 @@ Set the `php` flag in the header of the page which contains PHP code.
     Flags: php
     */
 
-Notes
------
-If your content folder is visible from the web (which should not be the case), 
-then be aware that the PHP code within Femto pages will be displayed as plain 
-text when pages files are accessed directly.
+    <?php
+    // code goes here
 
-Content of pages with the `php` flag set is never cached, thus setting the 
-`no-cache` flag as well is redundant.
+The output of your PHP script will be used as content for the page. 
+Alternatively, if your script has no output, $page['content'] will be used.
 
-Content of pages with the `php` flag is not processed any further by default. If 
-you want to emulate the usual Femto behaviour (%variable% substitution, other 
-plugins, markdown), then you need to set the `php-emulate-femto` flag. This can
-have a significant impact on performances. You can disable markdown with the 
-`no-markdown` flag to mitigate the problem a bit.
+Features and Caveats
+--------------------
+### no-cache
+Content of pages with the `php` flag is never cached, thus setting the 
+`no-cache` flag is redundant.
 
-Your script has access to `$config` which contains the website's configuration
-and `$page` which contains the current page's information. If your code sets
-`$page['content']` then it will be used and output will be sent directly to the
-browser. If `$page['content']` is null then your script's output will be used as
-the page's content.
+### php-emulate-femto
+By default the content of pages with the `php` flag is not processed any
+further. If you want to emulate the usual Femto behaviour (%variables% 
+substitution, other plugins, markdown), then you need to set the 
+`php-emulate-femto` flag.
 
-Since the PHP code is not run directly from the page, magic constants like
-`__FILE__` and `__DIR__` will return unexpected results. Use `$page['file']` and
-`dirname($page['file'])` instead.
+This can have a significant impact on performances.
 
-If you `return` a non-null value within your script, the value will be displayed
-as an error. You can also return an array in which case the first element will 
-be used as title and the second as error message.
+    /*
+    Title: My Page
+    Flags: php,php-emulate-femto
+    */
 
-Forms validation and persistence
---------------------------------
-This function is available as a separate class: `\femto\plugin\PHP\Form`.
+    A markdown link:
+    [<?php echo phpversion(); ?>](http://php.net)
+
+### no-markdown
+You can set the `no-markdown` flag in combination with `php-emulate-femto` to
+disable markdown parsing and mitigate the performance hit.
+
+Has no effect when Femto emulation isn't active.
+
+### __FILE__ and __DIR__
+Since the PHP code is not run directly from the page's file, magic constants
+`__FILE__` and `__DIR__` will not work as expected. You can use `$page['file']`
+and `dirname($page['file'])` instead.
+
+    // access a file in the same directory as the page
+    $file = file_get_contents(dirname($page['file']).'/file.md');
+
+### $config
+This variable contains the website's configuration as defined in `index.php`.
+
+    // display the website's title
+    echo $config['site_title'];
+
+### $page
+This variable contains the current page's information as defined in the header.
+
+    // display the page's title
+    echo $page['title'];
+
+### Return
+If your script returns a non-null value, it will be treated as an error. You can
+also return an array where the first element will be the title and the second
+the error message.
+
+    // trigger an error
+    return 'An error happened';
+    // trigger an error with a title
+    return ['Error 1', 'Error 1 happened.'];
+
+### Page($url)
+Returns the Femto page corresponding to `$url` or `null` if there is none.
+
+    // find a page
+    $error_page = page('/404');
+
+### Directory($url, $sort='alpha', $order='asc')
+Returns all Femto pages in the directory corresponding to `$url` sorted by
+`$sort` in `$order` order. Pages returned by this functions have no content.
+
+    // list all pages in the content directory
+    foreach(directory('/') as $p) {
+        echo $p['title'];
+    }
+
+### Redirect($to, $code=303, $qsa=null)
+Redirects to `$to` with the code `$code`. `$to` can either be an url or a Femto
+page. Set `$qsa` to `True` to append the query string, or specify keys to keep
+or add.
+
+    // redirect to a different femto page
+    redirect(page('/page'));
+
+    // redirect to an arbitrary url
+    redirect('http://php.net');
+ 
+    // append the entire query string
+    redirect('http://php.net', 301, True);
+ 
+    // Add or select query string keys
+    redirect('http://php.net', 301, ['existing_get_var', 'newvar1'=>'value1']);
+
+### Form Class
+A class to check and persist forms.
 
 Validation is based on the HTML code, for example a field with `type="email"`
 will be checked to contain a valid email address. Since modern browsers check 
@@ -66,7 +137,7 @@ ensuring users do not lose the information they entered.
 
     // create a form object with the form's HTML code
     // code must begin and end with the <form> tag
-    $form = new \femto\plugin\PHP\Form('<form>...</form>');
+    $form = new Form('<form>...</form>');
 
     // check whether the form was submitted and is valid
     // this also trigger persistence if any data was submitted
@@ -89,10 +160,10 @@ The Form class supports multiple forms in the same page, provided they use
 different `name` attributes for their respective `submit` elements.
 
     // create a form object with additional configuration
-    $form1 = new \femto\plugin\PHP\Form('<form>...</form>', ['debug'=>True]);
+    $form1 = new Form('<form>...</form>', ['debug'=>True]);
 
     // create a second form, submit element must use a different name
-    $form2 = new \femto\plugin\PHP\Form('<form>...</form>');
+    $form2 = new Form('<form>...</form>');
 
     // check whether form1 was submitted and is valid
     if ($form1()) {
