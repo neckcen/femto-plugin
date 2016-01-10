@@ -83,7 +83,6 @@ function redirect($to, $code=303, $qsa=null) {
             }
         }
     }
-    echo $to; exit();
     header('Location: '.$to, true, $code);
     exit();
 }
