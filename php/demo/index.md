@@ -1,9 +1,9 @@
 /*
 Title: PHP Plugin Demonstration
 Description: A demonstration of the PHP plugin in action.
-Flags: php
+Flags: php,php-emulate-femto
 */
-<?php $form = new \femto\plugin\PHP\Form('
+<?php $form = new Form('
 <form novalidate method="POST" class="forms">
     <label>
         Required field
@@ -72,7 +72,7 @@ Flags: php
     </p>
 </form>');
 
-$form2 = new femto\plugin\PHP\Form('
+$form2 = new Form('
 <form novalidate method="POST" class="forms">
     <label>
         Required field

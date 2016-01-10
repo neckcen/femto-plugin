@@ -9,8 +9,8 @@ will be displayed as plain text when accessed directly.
 
 Installation
 ------------
-Copy `php.php` to `femto/plugins` then add _PHP_ to the list of enabled plugins
-in `index.php`:
+Copy `php.php` and the `php` folder to `femto/plugins` then add _PHP_ to the 
+list of enabled plugins in `index.php`:
 
     $config['plugin_enabled'] = 'PHP';
 
