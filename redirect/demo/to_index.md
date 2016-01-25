@@ -1,3 +1,3 @@
 /*
-Redirect: index
+Redirect: femto://directory/
 */

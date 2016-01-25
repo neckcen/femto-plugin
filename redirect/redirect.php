@@ -1,6 +1,6 @@
 <?php
 
-namespace femto\plugin;
+namespace femto\plugin\redirect;
 
 /**
  * A Femto plugin. Let you redirect a page to another page or an arbitrary
@@ -8,57 +8,33 @@ namespace femto\plugin;
  *
  * @author Sylvain Didelot
  */
-class Redirect {
-    /**
-     * Configuration.
-     *
-     * @var array
-     */
-    protected $config;
 
-    /**
-     * Instance the plugin with given configuration.
-     *
-     * @param array $config The website configuration.
-     */
-    public function __construct($config) {
-        $this->config = $config;
-    }
 
-    /**
-     * Add redirect headers.
-     *
-     * @param array $header The list of headers.
-     */
-    public function page_parse_header_before(&$header) {
-        $header['redirect'] = null;
-    }
+/**
+ * Add redirect headers.
+ *
+ * @param array $header The list of headers.
+ */
+function config(&$config) {
+    \femto\Page::$header['redirect'] = null;
+}
 
-    /**
-     * Parse redirect header if present.
-     *
-     * @param array $page a Femto page.
-     */
-    public function page_parse_header_after(&$page) {
-        if(!empty($page['redirect'])) {
-            $url = str_replace('%base_url%', $this->config['base_url'], $page['redirect']);
-            $type = in_array('redirect-permanent', $page['flags']) ? 301 : 302;
-            $page['redirect'] = [
-                'to' => $url,
-                'type' => $type,
-            ];
+/**
+ * Apply redirection.
+ *
+ * @param array $page a Femto page.
+ */
+function request_complete($page) {
+    if(!empty($page['redirect'])) {
+        $page['redirect'] = str_replace('femto://self', $page['url'], $page['redirect']);
+        $url = isset($page['directory']) ? $page['directory']['url'] : '';
+        $page['redirect'] = str_replace('femto://directory', $url, $page['redirect']);
+        $page['redirect'] = str_replace('femto://', \femto\Femto::$config['base_url'].'/', $page['redirect']);
+        if(!preg_match('`^(?:[a-z][a-z0-9+-.]*:)?//`i', $page['redirect'])) {
+            $page['redirect'] = \femto\real_url($page['redirect'], $page['directory']['url']);
         }
-    }
-
-    /**
-     * Apply redirection.
-     *
-     * @param array $page a Femto page.
-     */
-    public function request_complete(&$page) {
-        if(!empty($page['redirect'])) {
-            header('Location: '.$page['redirect']['to'], true, $page['redirect']['type']);
-            exit();
-        }
+        $type = in_array('redirect-permanent', $page['flags']) ? 301 : 302;
+        header('Location: '.$page['redirect'], true, $type);
+        exit();
     }
 }

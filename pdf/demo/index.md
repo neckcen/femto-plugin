@@ -10,7 +10,9 @@ The PDF plugin let you create PDF files of your website's pages. It uses
 [dompdf](https://github.com/dompdf/dompdf) to do so and will use the print 
 style.
 
-[Try a PDF version of this page](%base_url%/plugin/pdf%self_url%).
+[Try a PDF version of this page](pdf://self).
+
+[Try a PDF version of the homepage](pdf://).
 
 Gibberish
 ---------

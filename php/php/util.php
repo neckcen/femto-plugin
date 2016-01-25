@@ -1,90 +1,101 @@
 <?php
-// functions and classes available to PHP scripts
-namespace femto\plugin\PHP;
+/**
+ * Useful functions and classes available to PHP scripts.
+ *
+ */
+namespace femto\plugin\php\util;
 
 /**
- * Proxy to \femto\page()
+ * Return the page associated with the url.
  *
- * @see \femto\page()
+ * @see \femto\Page::resolve()
  *
  * @param string $url The url to resolve
- * @return array Femto page, null if not found
+ * @return Page Femto page, null if not found
  */
 function page($url) {
-    return \femto\page($url);
+    return \femto\Page::resolve($url);
 }
 
 /**
- * Proxy to \femto\directory()
+ * Return the directory associated with the url.
  *
- * @see \femto\directory()
+ * @see \femto\Directory::resolve()
  *
  * @param string $url The url to list
- * @param string $sort Sorting criteria
- * @param string $order Sorting order
- * @return array List of Femto pages with content removed
+ * @return Directory List of Femto pages with content removed
  */
-function directory($url, $sort='alpha', $order='asc') {
-    return \femto\directory($url, $sort, $order);
+function directory($url) {
+    return \femto\Directory::resolve($url);
 }
 
 /**
- * Redirect to a different page or url. Optionally append (part of) the query
- * string.
+ * Redirect to a different url.
  *
  * Usage:
- *
- * // redirect to a different femto page
- * redirect(page('/page'));
  *
  * // redirect to an arbitrary url
  * redirect('http://php.net');
  *
- * // use a different redirect code
+ * // use a different redirect code (default 303)
  * redirect('http://php.net', 301);
  *
- * // append the entire query string
- * redirect('http://php.net', 301, True);
- *
- * // append specific query string ($_GET) variable
- * redirect('http://php.net', 301, ['variable1']);
- *
- * // append new query string variable
- * redirect('http://php.net', 301, ['variable1'=>'value1']);
- *
- * // combine both previous examples
- * redirect('http://php.net', 301, ['existing_variable', 'variable1'=>'value1']);
+ * // redirect to a different femto page
+ * redirect(page('/404'));
  *
  * @see http://racksburg.com/choosing-an-http-status-code/
- * @see page()
  *
- * @param mixed $page Femto page or url to redirect to.
+ * @param string $to Url to redirect to
  * @param int $code HTTP code to send
- * @param mixed $qsa True to append the entire query string or an array of keys
  */
-function redirect($to, $code=303, $qsa=null) {
-    // redirect to a different femto page
-    if(is_array($to) && isset($to['url'])) {
-        $to = \femto\_::$config['base_url'].$to['url'];
-        // append the query string
-        if($qsa) {
-            $to .= '?';
-            if(is_array($qsa)) {
-                foreach($qsa as $key => $value) {
-                    if(is_string($key)) {
-                        $to .= $key.'='.urlencode($value).'&';
-                    } else if (isset($_GET[$value])) {
-                        $to .= $value.'='.urlencode($_GET[$value]).'&';
-                    }
-                }
-                $to = substr($to, 0, -1);
-            } else {
-                $to .= $_SERVER['QUERY_STRING'];
-            }
-        }
-    }
+function redirect($to, $code=303) {
     header('Location: '.$to, true, $code);
     exit();
+}
+
+/**
+ * Escape a string for use in HTML code.
+ *
+ * @param string $string unescaped string
+ * @return string escaped string
+ */
+function escape($string) {
+    return \femto\escape($string);
+}
+
+/**
+ * Build a query string based on the current one.
+ *
+ * Usage:
+ *
+ * // the current query string
+ * qs();
+ *
+ * // selected variable from current query string
+ * // use * to copy all current variables
+ * qs(['variable_selected']);
+ *
+ * // new variable
+ * qs(['new_variable'=>'new_value']);
+ *
+ * // combined
+ * qs(['new_variable'=>'new_value','variable_selected']);
+ *
+ * @param array $select variables to keep or add
+ * @return string query string
+ */
+function qs($select=['*']) {
+    $qs = [];
+    foreach($select as $key => $value) {
+        if(is_string($key)) {
+            $qs[] = $key.'='.urlencode($value);
+        } else if ($value == '*') {
+            $qs[] = $_SERVER['QUERY_STRING'];
+        } else if (isset($_GET[$value])) {
+            $qs[] = $value.'='.urlencode($_GET[$value]);
+        }
+    }
+    return empty($qs) ? '' : '?'.implode('&', $qs);
 }
 
 /**

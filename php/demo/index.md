@@ -3,7 +3,9 @@ Title: PHP Plugin Demonstration
 Description: A demonstration of the PHP plugin in action.
 Flags: php,php-emulate-femto
 */
-<?php $form = new Form('
+<?php 
+
+$form = new Form('
 <form novalidate method="POST" class="forms">
     <label>
         Required field
@@ -89,17 +91,17 @@ PHP Plugin Demonstration
 Running PHP code
 ----------------
 
-The server time is **<?php echo date('H:i'); ?>**.
+The server time is **<?=date('H:i')?>**.
 
 Form validation and persistence
 -------------------------------
 
 This first form was submited and is valid:
-<?php echo $form() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
+<?= $form() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
 
-<?php echo $form; ?>
+<?= $form; ?>
 
 This second form was submited and is valid:
-<?php echo $form2() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
+<?= $form2() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
 
-<?php echo $form2; 
+<?= $form2; 

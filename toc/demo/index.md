@@ -27,10 +27,10 @@ Description: A demonstration of the TOC plugin in action.
 }
 </style>
 
-%TOC:1,6%
+{TOC:1,6}
 
 1 is the minimum level for a title to be included and 6 the maximum. Both are
-optional so you could just write %TOC% in this case.
+optional so you could just write {TOC} in this case.
 
 
 Level 1 title

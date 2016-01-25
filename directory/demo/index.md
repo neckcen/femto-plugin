@@ -6,7 +6,7 @@ Description: A demonstration of the directory plugin in action.
 Main Directory
 ==============
 
-%directory:/,alpha,desc%
+{directory:femto://,alpha,desc}
 
 `alpha` is the sorting method (the only one available by default) and `desc` is
 the sorting order (`asc` for ascending). Both are optional.
@@ -14,5 +14,5 @@ the sorting order (`asc` for ascending). Both are optional.
 This Directory
 ==============
 
-%directory:./%
+{directory:femto://directory}
 

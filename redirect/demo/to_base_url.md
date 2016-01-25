@@ -1,3 +1,3 @@
 /*
-Redirect: %base_url%/
+Redirect: femto://
 */
