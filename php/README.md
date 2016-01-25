@@ -42,9 +42,8 @@ Content of pages with the `php` flag is never cached, thus setting the
 
 ### php-emulate-femto
 By default the content of pages with the `php` flag is not processed any
-further. If you want to emulate the usual Femto behaviour (%variables% 
-substitution, other plugins, markdown), then you need to set the 
-`php-emulate-femto` flag.
+further. If you want to emulate the usual Femto behaviour, then you need to set
+the `php-emulate-femto` flag.
 
 This can have a significant impact on performances.
 
@@ -65,10 +64,10 @@ Has no effect when Femto emulation isn't active.
 ### __FILE__ and __DIR__
 Since the PHP code is not run directly from the page's file, magic constants
 `__FILE__` and `__DIR__` will not work as expected. You can use `$page['file']`
-and `dirname($page['file'])` instead.
+and `$page['directory']['file']` instead.
 
     // access a file in the same directory as the page
-    $file = file_get_contents(dirname($page['file']).'/file.md');
+    $file = file_get_contents($page['directory']['file'].'/file.md');
 
 ### $config
 This variable contains the website's configuration as defined in `index.php`.
@@ -98,31 +97,45 @@ Returns the Femto page corresponding to `$url` or `null` if there is none.
     // find a page
     $error_page = page('/404');
 
-### Directory($url, $sort='alpha', $order='asc')
-Returns all Femto pages in the directory corresponding to `$url` sorted by
-`$sort` in `$order` order. Pages returned by this functions have no content.
+### Directory($url)
+Returns the Femto directory corresponding to `$url` or an empty directory. Use
+the `sort()` method to list the pages inside. Pages returned have no content.
 
     // list all pages in the content directory
-    foreach(directory('/') as $p) {
+    foreach(directory('/')->sort('alpha', 'asc') as $p) {
         echo $p['title'];
     }
 
-### Redirect($to, $code=303, $qsa=null)
-Redirects to `$to` with the code `$code`. `$to` can either be an url or a Femto
-page. Set `$qsa` to `True` to append the query string, or specify keys to keep
-or add.
+### Redirect($to, $code=303)
+Redirects to `$to` with the code `$code`. 
 
     // redirect to a different femto page
-    redirect(page('/page'));
+    redirect($other_page['url']);
 
-    // redirect to an arbitrary url
-    redirect('http://php.net');
+    // redirect to an arbitrary url with a different code
+    redirect('http://php.net', 301);
+
+### Qs($select=['*'])
+Build a query string based on the current one. Optionally select keys to keep or
+add.
+
+    // the current query string
+    qs();
  
-    // append the entire query string
-    redirect('http://php.net', 301, True);
+    // selected variable from current query string
+    // use * to copy all current variables
+    qs(['variable_selected']);
  
-    // Add or select query string keys
-    redirect('http://php.net', 301, ['existing_get_var', 'newvar1'=>'value1']);
+    // new variable
+    qs(['new_variable'=>'new_value']);
+ 
+    // combined
+    qs(['new_variable'=>'new_value','variable_selected']);
+
+### Escape($string)
+Escape a string for use with html. Like in templates, you can also use short
+echo tags `<?=` to directly display escaped content and `<?==` to display
+unescaped content.
 
 ### Form Class
 A class to check and persist forms.

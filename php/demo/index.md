@@ -97,11 +97,11 @@ Form validation and persistence
 -------------------------------
 
 This first form was submited and is valid:
-<?= $form() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
+<?== $form() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
 
-<?= $form; ?>
+<?== $form; ?>
 
 This second form was submited and is valid:
-<?= $form2() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
+<?== $form2() ? '<strong style="color:green">Yes</strong>' : '<strong style="color:red">No</strong>'; ?>
 
-<?= $form2; 
+<?== $form2; 

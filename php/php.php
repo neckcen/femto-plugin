@@ -36,11 +36,17 @@ function page_content_before($page) {
         for ($i=0; $i < $lines; $i++) {
             $content .= "\n";
         }
-        if(substr($page['content'], 0, 5) == '<?php') {
-            $content .= substr($page['content'], 5);
-        } else {
-            $content .= '?>'.$page['content'];
-        }
+        $content .= '?>'.$page['content'];
+        $content = str_replace('<?==', '<?php echo ', $content);
+        /* this ugly thing matches echo tags without tripping on things like
+           <?=$x['?>']?> or <?=(true)?'a':b'?>
+        */
+        $content = preg_replace(
+            '`<\?='.
+            '((?:[^;\?"\']|\?[^>]|"(?:[^"]|\\\\")*"|\'(?:[^\']|\\\\\')*\')+)'.
+            '((?:;[^;\?"\']|\?[^>]|"(?:[^"]|\\\\")*"|\'(?:[^\']|\\\\\')*\')*)'.
+            '\?>`', '<?php echo escape($1); $2 ?>', $content);
+        $content = str_replace('?><?php', '', $content);
         $cache->store($content);
     }
 
