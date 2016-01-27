@@ -37,16 +37,64 @@ function page_content_before($page) {
             $content .= "\n";
         }
         $content .= '?>'.$page['content'];
-        $content = str_replace('<?==', '<?php echo ', $content);
-        /* this ugly thing matches echo tags without tripping on things like
-           <?=$x['?>']?> or <?=(true)?'a':b'?>
-        */
-        $content = preg_replace(
-            '`<\?='.
-            '((?:[^;\?"\']|\?[^>]|"(?:[^"]|\\\\")*"|\'(?:[^\']|\\\\\')*\')+)'.
-            '((?:;[^;\?"\']|\?[^>]|"(?:[^"]|\\\\")*"|\'(?:[^\']|\\\\\')*\')*)'.
-            '\?>`', '<?php echo escape($1); $2 ?>', $content);
-        $content = str_replace('?><?php', '', $content);
+        $token = token_get_all($content);
+        $content = '';
+        $escaping = false;
+        foreach($token as $i => $t) {
+            if(is_array($t)) {
+                if($t[0] === T_OPEN_TAG_WITH_ECHO) {
+                    // don't reopen if last tag was closing
+                    if(isset($token[$i-1][0]) && $token[$i-1][0] === T_CLOSE_TAG) {
+                        $content .= 'echo ';
+                    } else {
+                        $content .= $t[1];
+                    }
+                    if(!isset($token[$i+1]) || $token[$i+1] !== '=') {
+                        $content .= 'escape(';
+                        $escaping = true;
+                    }
+
+                } else if ($t[0] === T_OPEN_TAG) {
+                    // don't reopen if last tag was closing
+                    if(!isset($token[$i-1][0]) || $token[$i-1][0] !== T_CLOSE_TAG) {
+                        $content .= $t[1];
+                    }
+
+                } else if ($t[0] === T_CLOSE_TAG) {
+                    // end escaping
+                    if($escaping) {
+                        $content .= ')';
+                        $escaping = false;
+                    }
+                    // don't close if next tag is an opening
+                    if(!isset($token[$i+1][0])
+                      || ($token[$i+1][0] !== T_OPEN_TAG && $token[$i+1][0] !== T_OPEN_TAG_WITH_ECHO)) {
+                        $content .= $t[1];
+                    } else {
+                        // ensure instructions are properly closed with semi colon
+                        if(isset($token[$i-1][0]) && $token[$i-1][0] === T_WHITESPACE) {
+                            $last = isset($token[$i-2]) ? $token[$i-2] : false;
+                        } else {
+                            $last = isset($token[$i-1]) ? $token[$i-1] : false;
+                        }
+                        if($last && !in_array($last, [';', ':', '}'])) {
+                            $content .= ';';
+                        }
+                    }
+                } else {
+                    $content .= $t[1];
+                }
+            } else {
+                if($t === '=' && isset($token[$i-1][0]) && $token[$i-1][0] === T_OPEN_TAG_WITH_ECHO) {
+                    continue;
+                }
+                if($t === ';' && $escaping) {
+                    $content .= ')';
+                    $escaping = false;
+                }
+                $content .= $t;
+            }
+        }
         $cache->store($content);
     }
 

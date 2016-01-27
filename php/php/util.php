@@ -59,7 +59,8 @@ function redirect($to, $code=303) {
  * @param string $string unescaped string
  * @return string escaped string
  */
-function escape($string) {
+function escape() {
+    $string = implode('', func_get_args());
     return \femto\escape($string);
 }
 
