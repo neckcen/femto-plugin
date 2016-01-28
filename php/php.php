@@ -33,7 +33,7 @@ function page_content_before($page) {
         $start = strpos($content, $page['content']);
         $lines = substr_count($content, "\n", 0, $start);
         $content = '<?php namespace femto\plugin\php\util;';
-        for ($i=0; $i < $lines; $i++) {
+        for ($i=0; $i <= $lines; $i++) {
             $content .= "\n";
         }
         $content .= '?>'.$page['content'];
@@ -120,31 +120,24 @@ function request_complete($page) {
     // make goodies available
     require __DIR__.'/php/util.php';
     // include the script created earlier
-    $config = \femto\Femto::$config;
-    ob_start();
-    $return = include $page['php_file'];
-    $content = ob_get_clean();
-
-    // if return isn't null or true assume an error
-    if($return != null && $return != True) {
-        header('Internal Server Error', true, 500);
-        if(is_array($return)) {
-            $page['title'] = isset($return[0]) ? $return[0] : 'Error 500';
-            $page['content'] = isset($return[1]) ? $return[1] : 'Error';
-        } else {
-            $page['title'] = 'Error 500';
-            $page['content'] = $return;
+    try {
+        $config = \femto\Femto::$config;
+        ob_start();
+        include $page['php_file'];
+        $content = ob_get_clean();
+        // if $content isn't empty then use it as page's content
+        if(!empty($content)) {
+            $page['content'] = $content;
         }
-        return;
-    }
-    // if $content isn't empty then use it as page's content
-    if(!empty($content)) {
-        $page['content'] = $content;
-    }
-    // Treat $page['content'] like femto would if php-emulate-femto is set.
-    // As php scripts are not cached, using markdown is not recommended
-    // (set the no-markdown flag to disable markdown parsing).
-    if(in_array('php-emulate-femto', $page['flags'])) {
-        $page->content();
+        // Treat $page['content'] like femto would if php-emulate-femto is set.
+        // As php scripts are not cached, using markdown is not recommended
+        // (set the no-markdown flag to disable markdown parsing).
+        if(in_array('php-emulate-femto', $page['flags'])) {
+            $page->content();
+        }
+    } catch (util\Exception $e) {
+        header($_SERVER['SERVER_PROTOCOL'].' 500 Internal Server Error', true, 500);
+        $page['title'] = 'Error 500';
+        $page['content'] = $e->getMessage().'<pre>'.$e->getTraceAsString().'</pre>';
     }
 }

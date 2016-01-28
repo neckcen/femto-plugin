@@ -69,6 +69,16 @@ and `$page['directory']['file']` instead.
     // access a file in the same directory as the page
     $file = file_get_contents($page['directory']['file'].'/file.md');
 
+### namespace
+PHP pages are run inside the `femto\plugin\php\util` namespace. If you want to
+instance a global class you should prefix it with `\`.
+
+    // global class instance
+    $object = new \DomDocument();
+
+If you include another file from your page you should add 
+`namespace femto\plugin\php\util;` at the top.
+
 ### $config
 This variable contains the website's configuration as defined in `index.php`.
 
@@ -81,15 +91,11 @@ This variable contains the current page's information as defined in the header.
     // display the page's title
     echo $page['title'];
 
-### Return
-If your script returns a non-null value, it will be treated as an error. You can
-also return an array where the first element will be the title and the second
-the error message.
+### Exception
+You can throw an `Exception` to trigger an error page.
 
     // trigger an error
-    return 'An error happened';
-    // trigger an error with a title
-    return ['Error 1', 'Error 1 happened.'];
+    throw new Exception('The error message');
 
 ### Page($url)
 Returns the Femto page corresponding to `$url` or `null` if there is none.
@@ -115,7 +121,7 @@ Redirects to `$to` with the code `$code`.
     // redirect to an arbitrary url with a different code
     redirect('http://php.net', 301);
 
-### Qs($select=['*'])
+### Qs($select='*')
 Build a query string based on the current one. Optionally select keys to keep or
 add.
 
@@ -124,7 +130,7 @@ add.
  
     // selected variable from current query string
     // use * to copy all current variables
-    qs(['variable_selected']);
+    qs('variable_selected');
  
     // new variable
     qs(['new_variable'=>'new_value']);

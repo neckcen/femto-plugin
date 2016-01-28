@@ -6,6 +6,11 @@
 namespace femto\plugin\php\util;
 
 /**
+ * Throwing this exception triggers an error page.
+ */
+class Exception extends \Exception {}
+
+/**
  * Return the page associated with the url.
  *
  * @see \femto\Page::resolve()
@@ -74,7 +79,7 @@ function escape() {
  *
  * // selected variable from current query string
  * // use * to copy all current variables
- * qs(['variable_selected']);
+ * qs('variable_selected');
  *
  * // new variable
  * qs(['new_variable'=>'new_value']);
@@ -85,7 +90,8 @@ function escape() {
  * @param array $select variables to keep or add
  * @return string query string
  */
-function qs($select=['*']) {
+function qs($select='*') {
+    if(!is_array($select)) $select = [$select];
     $qs = [];
     foreach($select as $key => $value) {
         if(is_string($key)) {
@@ -318,6 +324,7 @@ class Form {
         } else if ($node->nodeName == 'select') {
             $name = $node->getAttribute('name');
             $value = isset($_POST[$name]) ? $_POST[$name] : null;
+
             // check if required
             if($node->getAttribute('required') && !$value) {
                 $this->invalid[] = $node;
@@ -326,7 +333,7 @@ class Form {
             $options = [];
             foreach($node->childNodes as $n) {
                 if($n->nodeName == 'option') {
-                    $option = $n->getAttribute('Value');
+                    $option = $n->getAttribute('value');
                     if(!$option) {
                         $option = $n->nodeValue;
                     }
