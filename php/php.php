@@ -138,6 +138,9 @@ function request_complete($page) {
     } catch (util\Exception $e) {
         header($_SERVER['SERVER_PROTOCOL'].' 500 Internal Server Error', true, 500);
         $page['title'] = 'Error 500';
-        $page['content'] = $e->getMessage().'<pre>'.$e->getTraceAsString().'</pre>';
+        $page['content'] = $e->getMessage();
+        if(\femto\Femto::$config['debug']) {
+            $page['content'] .= '<pre>'.$e->getTraceAsString().'</pre>';
+        }
     }
 }
