@@ -33,7 +33,7 @@ function page_content_before($page) {
         $start = strpos($content, $page['content']);
         $lines = substr_count($content, "\n", 0, $start);
         $content = '<?php namespace femto\plugin\php\util;';
-        for ($i=0; $i <= $lines; $i++) {
+        for ($i=0; $i < $lines; $i++) {
             $content .= "\n";
         }
         $content .= '?>'.$page['content'];
@@ -45,7 +45,7 @@ function page_content_before($page) {
                 if($t[0] === T_OPEN_TAG_WITH_ECHO) {
                     // don't reopen if last tag was closing
                     if(isset($token[$i-1][0]) && $token[$i-1][0] === T_CLOSE_TAG) {
-                        $content .= 'echo ';
+                        $content .= substr($t[1], 3).'echo ';
                     } else {
                         $content .= $t[1];
                     }
@@ -56,7 +56,9 @@ function page_content_before($page) {
 
                 } else if ($t[0] === T_OPEN_TAG) {
                     // don't reopen if last tag was closing
-                    if(!isset($token[$i-1][0]) || $token[$i-1][0] !== T_CLOSE_TAG) {
+                    if(isset($token[$i-1][0]) && $token[$i-1][0] === T_CLOSE_TAG) {
+                        $content .= substr($t[1], 5);
+                    } else {
                         $content .= $t[1];
                     }
 
