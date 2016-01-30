@@ -42,20 +42,20 @@ function url($url) {
           ($protocol == 'https' && $port == ':443')) {
             $port = '';
         }
-        $url = sprintf('%s://%s%s%s%s', $protocol, $http_auth,
-          $_SERVER['SERVER_NAME'], $port, $page['url']);
+        $url = sprintf('%s://%s%s%s', $protocol, $http_auth,
+          $_SERVER['SERVER_NAME'], $port);
 
         // create pdf
         require __DIR__.'/pdf/dompdf_config.inc.php';
         $dompdf = new \DOMPDF();
-        $dompdf->load_html_file($url);
+        $dompdf->load_html_file($url.$page['url']);
         $dom = $dompdf->get_dom();
         foreach($dom->getElementsByTagName('a') as $link) {
             $href = $link->getAttribute('href');
             if(substr($href, 0, 2) == '//') {
                 $link->setAttribute('href', $protocol.':'.$href);
             } else if (substr($href, 0, 1) == '/') {
-                $link->setAttribute('href', $base_url.$href);
+                $link->setAttribute('href', $url.$href);
             }
         }
         $dompdf->render();
