@@ -25,7 +25,7 @@ function config(&$config) {
 /**
  * Build the gallery if requested.
  *
- * Search the page's content for %gallery:WIDTHxHEIGHT%. If found search for
+ * Search the page's content for {gallery:WIDTHxHEIGHT}. If found search for
  * all images in the current page's directory and display them.
  *
  * @param Page $page Femto page.
