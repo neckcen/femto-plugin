@@ -40,8 +40,8 @@ It is recommended to add the following styles to your theme as well:
 
 Usage
 -----
-Add `%gallery:width:height%` anywhere in the page. Width is exact total width of
+Add `{gallery:width:height}` anywhere in the page. Width is exact total width of
 the gallery. Height is the ideal height of a single row and may vary. Both are
 expressed in pixels.
 
-    %gallery:600x200%
+    {gallery:600x200}
