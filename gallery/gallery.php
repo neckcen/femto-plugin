@@ -67,7 +67,7 @@ function page_content_after($page) {
     $url = \femto\escape(\femto\Femto::$config['base_url'].'/plugin/image');
     foreach($distribution as $row) {
         $total_ratio = array_sum($row) / 10000;
-        $height = round($display_width / $total_ratio);
+        $height = floor($display_width / $total_ratio);
         // ensure the width sums to $display_width
         // aka largest remainder method
         $width = [];
@@ -88,7 +88,7 @@ function page_content_after($page) {
             $gallery .= sprintf(
               '<li style="width:%f%%"><a href="%s%s">'.
               '<img src="%s%s?w=%d&amp;h=%d" alt=""/></a></li>',
-              $width[$k]/6, $url, $file, $url, $file, $width[$k], $height
+              $width[$k]/$display_width*100, $url, $file, $url, $file, $width[$k], $height
             );
         }
     }

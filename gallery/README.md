@@ -34,6 +34,7 @@ It is recommended to add the following styles to your theme as well:
     }
     .gallery img {
         height:auto;
+        vertical-align:middle;
         width:100%;
     }
 
