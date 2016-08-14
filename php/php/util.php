@@ -244,12 +244,30 @@ class Form {
      *
      * @param DomElement $node The dome element to validate
      */
+    // TODO: support array syntax (name[])
     protected function validate($node) {
         if($node->nodeName == 'input') {
             $type = $node->getAttribute('type');
             $name = $node->getAttribute('name');
             if(!$type || !$name
               || in_array($type, ['button', 'image', 'reset'])) {
+                return;
+            }
+
+            if($type == 'file') {
+                $value = isset($_FILES[$name]) ? $_FILES[$name] : null;
+                if ($value) {
+                    $accept = $node->getAttribute('accept');
+                    if($accept) {
+                        $accept = explode(',', $accept);
+                        if(!in_array($value['type'], $accept)) {
+                            $this->invalid[] = $node;
+                        }
+                    }
+
+                } else if($node->hasAttribute('required')) {
+                    $this->invalid[] = $node;
+                }
                 return;
             }
 
