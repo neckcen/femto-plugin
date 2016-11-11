@@ -153,14 +153,20 @@ function page_content_after($page) {
               '<img src="%s?w=%d&amp;h=%d" alt="%s"/></a>%s</figure>',
               $align, $width, $src, $src, $width, $height, $alt, $title
             );
+            // figure can't go inside <p>
+            if($p1 == '' && $p2 == '') {
+                $parsed = '</p>'.$parsed.'<p>';
+            } else if ($p1 != '' && $p2 == '') {
+                $parsed = $parsed.'<p>';
+            } else if ($p1 == '' && $p2 != '') {
+                $parsed = '</p>'.$parsed;
+            }
         } else {
             $parsed = sprintf(
               '<img src="%s" alt="%s" title="%s"/>',
               $src, $alt, $title
             );
-        }
-        if($p1 != '' && $p2 == '') {
-            $tag = substr($tag, 3);
+            $parsed = $p1.$parsed.$p2;
         }
         $page['content'] = str_replace($tag, $parsed, $page['content']);
     }
